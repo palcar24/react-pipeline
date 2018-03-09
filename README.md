@@ -1,6 +1,8 @@
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
-## Configuration Requirements
+# WIP CHECK BACK LATER
+
+## Setup
 
 This project uses AWS Cognito for authentication.
 - You need to copy src/config-dummy.js to src/config.js
@@ -13,8 +15,7 @@ Or in the output of the
 ## Directory Structure
 The Serverless API we are building! The [api directory](api/) contains five files.
 
-- **[buildspec.yml](api/buildspec.yml):** This is used by CodeBuild in the build step of our pipeline.
-- **[saml.yaml](api/saml.yaml):** This is the SAM template file that will be used to create our API gateway resource and Lambda function, hook them up together
+- **[buildspec.yml]:** This is used by CodeBuild in the build step of our pipeline.
 
 ## Available Scripts
 
