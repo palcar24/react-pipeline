@@ -7,8 +7,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 This project uses AWS Cognito for authentication.
 - You need to copy src/config-dummy.js to src/config.js
 - Then you need to edit src/config.js and update:
-  USER_POOL_ID: "ENTER_YOUR_USER_POOL_ID_HERE",
-  APP_CLIENT_ID: "ENTER_YOUR_APP_CLIENT_ID_HERE"
+  - USER_POOL_ID: "ENTER_YOUR_USER_POOL_ID_HERE",
+  - APP_CLIENT_ID: "ENTER_YOUR_APP_CLIENT_ID_HERE"
 These id's are available in the AWS web console under the Cognito service.
 Or in the output of the
 

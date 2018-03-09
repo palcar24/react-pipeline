@@ -1,0 +1,105 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Pipeline using CodePipeline and CodeBuild for continuous delivery of a single-page application to S3
+Parameters:
+  AppName:
+   Type: String
+   Description: Name of the application.
+   MinLength: "1"
+   MaxLength: "80"
+   Default: "Reactive-Demo"
+   AllowedPattern: "[A-Za-z0-9-]+"
+   ConstraintDescription: Malformed input parameter. AppName must only contain upper and lower case letters, numbers, and -.
+  SiteBucketName:
+    Type: String
+    Description: Name of bucket to create to host the website
+  GitHubUser:
+    Type: String
+    Description: GitHub User
+    Default: ""
+  GitHubRepo:
+    Type: String
+    Description: GitHub Repo to pull from. Only the Name. not the URL
+    Default: ""
+  GitHubBranch:
+    Type: String
+    Description: GitHub Branch
+    Default: "master"
+  GitHubToken:
+    NoEcho: true
+    Type: String
+    Description: Secret. It might look something like 9b189a1654643522561f7b3ebd44a1531a4287af OAuthToken with access to Repo. Go to https://github.com/settings/profile then Developer Settings
+  BuildType:
+    Type: String
+    Default: "LINUX_CONTAINER"
+    Description: The build container type to use for building the app
+  BuildComputeType:
+    Type: String
+    Default: "BUILD_GENERAL1_SMALL"
+    Description: The build compute type to use for building the app
+  BuildImage:
+    Type: String
+    Default: "aws/codebuild/ubuntu-base:14.04"
+    Description: The build image to use for building the app
+  ResourceBucketName:
+    Type: "String"
+    Description: "Name of bucket to hold resources. lamda's templates..."
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: "Site Configuration"
+        Parameters:
+          - AppName
+          - SiteBucketName
+          - ResourceBucketName
+      - Label:
+          default: "GitHub Configuration"
+        Parameters:
+          - GitHubToken
+          - GitHubUser
+          - GitHubRepo
+          - GitHubBranch
+      - Label:
+          default: "Build Configuration"
+        Parameters:
+          - BuildType
+          - BuildComputeType
+          - BuildImage
+    ParameterLabels:
+      AppName:
+        default: Name of the web application
+      SiteBucketName:
+        default: Name of S3 Bucket to create for website hosting
+      GitHubToken:
+        default: GitHub OAuth2 Token
+      GitHubUser:
+        default: GitHub User/Org Name
+      GitHubRepo:
+        default: GitHub Repository Name
+      GitHubBranch:
+        default: GitHub Branch Name
+      BuildType:
+        default: CodeBuild type
+      BuildComputeType:
+        default: CodeBuild instance type
+      BuildImage:
+        default: CodeBuild image
+      ResourceBucketName:
+        default: Name of bucket that contains the resources. lamda's templates...
+Resources:
+  ServerlessPipeline:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      Parameters:
+        AppName: !Ref AppName
+        SiteBucketName: !Ref SiteBucketName
+        GitHubUser:  !Ref GitHubUser
+        GitHubRepo:  !Ref GitHubRepo
+        GitHubBranch:  !Ref GitHubBranch
+        GitHubToken:  !Ref GitHubToken
+        BuildType:  !Ref BuildType
+        BuildComputeType:  !Ref BuildComputeType
+        BuildImage:  !Ref BuildImage
+        ResourceBucketName:  !Ref ResourceBucketName
+      TemplateURL: !Join ['', ['https://s3.amazonaws.com/', !Ref 'ResourceBucketName', '/pipeline.yaml']]

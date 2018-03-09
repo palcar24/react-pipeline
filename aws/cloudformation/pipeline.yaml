@@ -1,0 +1,276 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Pipeline using CodePipeline and CodeBuild for continuous delivery of a single-page application to S3
+Parameters:
+  AppName:
+   Type: String
+   Description: Name of the application.
+   MinLength: "1"
+   MaxLength: "80"
+   Default: "Reactive-Demo"
+   AllowedPattern: "[A-Za-z0-9-]+"
+   ConstraintDescription: Malformed input parameter. AppName must only contain upper and lower case letters, numbers, and -.
+  SiteBucketName:
+    Type: String
+    Description: Name of bucket to create to host the website
+  GitHubUser:
+    Type: String
+    Description: GitHub User
+    Default: ""
+  GitHubRepo:
+    Type: String
+    Description: GitHub Repo to pull from. Only the Name. not the URL
+    Default: ""
+  GitHubBranch:
+    Type: String
+    Description: GitHub Branch
+    Default: "master"
+  GitHubToken:
+    NoEcho: true
+    Type: String
+    Description: Secret. It might look something like 9b189a1654643522561f7b3ebd44a1531a4287af OAuthToken with access to Repo. Go to https://github.com/settings/profile then Developer Settings
+  BuildType:
+    Type: String
+    Default: "LINUX_CONTAINER"
+    Description: The build container type to use for building the app
+  BuildComputeType:
+    Type: String
+    Default: "BUILD_GENERAL1_SMALL"
+    Description: The build compute type to use for building the app
+  BuildImage:
+    Type: String
+    Default: "aws/codebuild/ubuntu-base:14.04"
+    Description: The build image to use for building the app
+  ResourceBucketName:
+    Type: "String"
+    Description: "Name of bucket to create to host the website"
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: "Site Configuration"
+        Parameters:
+          - AppName
+          - SiteBucketName
+          - ResourceBucketName
+      - Label:
+          default: "GitHub Configuration"
+        Parameters:
+          - GitHubToken
+          - GitHubUser
+          - GitHubRepo
+          - GitHubBranch
+      - Label:
+          default: "Build Configuration"
+        Parameters:
+          - BuildType
+          - BuildComputeType
+          - BuildImage
+    ParameterLabels:
+      AppName:
+        default: Name of the web application
+      SiteBucketName:
+        default: Name of S3 Bucket to create for website hosting
+      GitHubToken:
+        default: GitHub OAuth2 Token
+      GitHubUser:
+        default: GitHub User/Org Name
+      GitHubRepo:
+        default: GitHub Repository Name
+      GitHubBranch:
+        default: GitHub Branch Name
+      BuildType:
+        default: CodeBuild type
+      BuildComputeType:
+        default: CodeBuild instance type
+      BuildImage:
+        default: CodeBuild image
+      ResourceBucketName:
+        default: Name of bucket that contains the resources. lamda's templates...
+Resources:
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - codebuild.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: codebuild-service
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action: "*"
+            Resource: "*"
+          Version: '2012-10-17'
+  CodePipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - codepipeline.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: codepipeline-service
+        PolicyDocument:
+          Statement:
+          - Action:
+            - codebuild:*
+            Resource: "*"
+            Effect: Allow
+          - Action:
+            - s3:GetObject
+            - s3:GetObjectVersion
+            - s3:GetBucketVersioning
+            Resource: "*"
+            Effect: Allow
+          - Action:
+            - s3:PutObject
+            Resource:
+            - arn:aws:s3:::codepipeline*
+            Effect: Allow
+          - Action:
+            - s3:*
+            - cloudformation:*
+            - iam:PassRole
+            Resource: "*"
+            Effect: Allow
+          Version: '2012-10-17'
+  S3SiteBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      AccessControl: PublicRead
+      BucketName: !Ref SiteBucketName
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+
+  S3SiteBucketPolicy:
+    DependsOn: [S3SiteBucket]
+    Description: Setting Amazon S3 bucket policy for AWS CodePipeline access
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3SiteBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Id: SSEAndSSLPolicy
+        Statement:
+          -
+            Action:
+              - "s3:GetObject"
+            Effect: "Allow"
+            Resource: !Sub "arn:aws:s3:::${S3SiteBucket}/*"
+            Principal: "*"
+  PipelineBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+  CodeBuildDeploySite:
+    DependsOn: [S3ArtifactBucket]
+    Type: AWS::CodeBuild::Project
+    DependsOn: CodeBuildRole
+    Properties:
+      Name: !Sub ${AWS::StackName}-DeploySite
+      Description: Deploy site to S3
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: !Ref BuildComputeType
+        Image: !Sub ${BuildImage}
+        Type: !Ref BuildType
+        EnvironmentVariables:
+          - Name: S3_BUCKET
+            Value: !Ref S3ArtifactBucket
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: !Sub |
+          version: 0.1
+          phases:
+            post_build:
+              commands:
+                - aws s3 cp --recursive --acl public-read ./src/build s3://${SiteBucketName}/
+      TimeoutInMinutes: 10
+  S3ArtifactBucket:
+      Description: Creating Amazon S3 bucket for AWS CodePipeline artifacts
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Retain
+      Properties:
+        VersioningConfiguration:
+          Status: Enabled
+  S3ArtifactBucketPolicy:
+    DependsOn: [S3ArtifactBucket]
+    Description: Setting Amazon S3 bucket policy for AWS CodePipeline access
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3ArtifactBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Id: SSEAndSSLPolicy
+        Statement:
+        - Sid: DenyInsecureConnections
+          Effect: Deny
+          Principal: "*"
+          Action: s3:*
+          Resource: !Sub "arn:aws:s3:::${S3ArtifactBucket}/*"
+          Condition:
+            Bool:
+              aws:SecureTransport: false
+  Pipeline:
+    DependsOn: [S3ArtifactBucket, CodeBuildDeploySite]
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn: !GetAtt CodePipelineRole.Arn
+      Stages:
+      - Name: Source
+        Actions:
+        - InputArtifacts: []
+          Name: Source
+          ActionTypeId:
+            Category: Source
+            Owner: ThirdParty
+            Version: '1'
+            Provider: GitHub
+          OutputArtifacts:
+             - Name: !Sub "${AppName}-SourceArtifact"
+          Configuration:
+            Owner: !Ref GitHubUser
+            Repo: !Ref GitHubRepo
+            Branch: !Ref GitHubBranch
+            OAuthToken: !Ref GitHubToken
+          RunOrder: 1
+      - Name: Deploy
+        Actions:
+        - Name: Artifact
+          ActionTypeId:
+            Category: Build
+            Owner: AWS
+            Version: '1'
+            Provider: CodeBuild
+          InputArtifacts:
+          - Name: !Sub "${AppName}-SourceArtifact"
+          OutputArtifacts:
+            - Name: !Sub "${AppName}-DeployArtifact"
+          Configuration:
+            ProjectName: !Ref CodeBuildDeploySite
+          RunOrder: 1
+      ArtifactStore:
+        Type: S3
+        Location: !Ref PipelineBucket
+Outputs:
+  PipelineUrl:
+    Value: !Sub https://console.aws.amazon.com/codepipeline/home?region=${AWS::Region}#/view/${Pipeline}
+    Description: CodePipeline URL
+  SiteUrl:
+    Value: !GetAtt [S3SiteBucket, WebsiteURL]
+    Description: S3 Website URL

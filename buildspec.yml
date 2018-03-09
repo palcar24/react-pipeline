@@ -1,8 +1,8 @@
 version: 0.0
 environment_variables:
     plaintext:
-        "INPUT_FILE": "saml.yaml"
-        "S3_BUCKET": ""
+        "INPUT_FILE": "aws/cloudformation/saml.yaml"
+        "": ""
 containers:
     LambdaFunctions:
         phases:
