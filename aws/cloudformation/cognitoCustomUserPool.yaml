@@ -4,7 +4,7 @@
   Parameters:
     ResourceBucketName:
       Type: "String"
-      Description: "Name of bucket to hold resources. lamda's, templates..."
+      Description: Name of bucket that contains the resources. lamda's templates...
   Resources:
     CloudFormationCustomUserPoolLogGroup:
       Type: "AWS::Logs::LogGroup"
