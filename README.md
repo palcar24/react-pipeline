@@ -3,14 +3,19 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 # WIP CHECK BACK LATER
 
 ## Setup
+### To initialize AWS
+- create an resource S3 bucket
+- copy aws/cloudformation/saml.yaml, aws/cloudformation/pipeline.yaml, and aws/cloudformation/cognitoCustomUserPool.yaml to resource S3 bucket
+- In the AWS web console create a new cloudformation stack using aws/cloudformation/reactCICD.yaml
 
+### For the reactjs application
 This project uses AWS Cognito for authentication.
 - You need to copy src/config-dummy.js to src/config.js
 - Then you need to edit src/config.js and update:
   - USER_POOL_ID: "ENTER_YOUR_USER_POOL_ID_HERE",
   - APP_CLIENT_ID: "ENTER_YOUR_APP_CLIENT_ID_HERE"
 - These id's are available in the AWS web console under the Cognito service.
-Or in the output of the
+Or from the output of the cognitoCustomUserPool.yaml template.
 
 ## Directory Structure
 The Serverless API we are building! The [api directory](api/) contains five files.
