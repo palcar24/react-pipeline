@@ -9,7 +9,7 @@ This project uses AWS Cognito for authentication.
 - Then you need to edit src/config.js and update:
   - USER_POOL_ID: "ENTER_YOUR_USER_POOL_ID_HERE",
   - APP_CLIENT_ID: "ENTER_YOUR_APP_CLIENT_ID_HERE"
-These id's are available in the AWS web console under the Cognito service.
+- These id's are available in the AWS web console under the Cognito service.
 Or in the output of the
 
 ## Directory Structure
