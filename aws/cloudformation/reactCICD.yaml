@@ -43,7 +43,7 @@ Parameters:
     Description: The build image to use for building the app
   ResourceBucketName:
     Type: "String"
-    Description: "Name of bucket to hold resources. lamda's templates..."
+    Description: "Name of bucket to hold resources. lamda's, templates..."
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -103,3 +103,9 @@ Resources:
         BuildImage:  !Ref BuildImage
         ResourceBucketName:  !Ref ResourceBucketName
       TemplateURL: !Join ['', ['https://s3.amazonaws.com/', !Ref 'ResourceBucketName', '/pipeline.yaml']]
+  CognitoStack:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      Parameters:
+        ResourceBucketName:  !Ref ResourceBucketName
+      TemplateURL: !Join ['', ['https://s3.amazonaws.com/', !Ref 'ResourceBucketName', '/cognitoCustomUserPool.yaml']]

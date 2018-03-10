@@ -43,7 +43,7 @@ Parameters:
     Description: The build image to use for building the app
   ResourceBucketName:
     Type: "String"
-    Description: "Name of bucket to create to host the website"
+    Description: "Name of bucket to hold resources. lamda's, templates..."
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
