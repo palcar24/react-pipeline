@@ -1,6 +1,6 @@
 ---
   AWSTemplateFormatVersion: "2010-09-09"
-  Description: "The AWS CloudFormation template for this Serverless application"
+  Description: "Template to create Cognito User Pool for Authentication."
   Parameters:
     ResourceBucketName:
       Type: "String"

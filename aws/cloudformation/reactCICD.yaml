@@ -1,7 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Pipeline using CodePipeline and CodeBuild for continuous delivery of a single-page application to S3
-Parameters:
+Description: Main template used to launch CI/CD Pipline and demo react project.
   AppName:
    Type: String
    Description: Name of the application.
