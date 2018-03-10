@@ -3,8 +3,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 # WIP CHECK BACK LATER
 
 ## Setup
+
 ### To initialize AWS
-- create an resource S3 bucket
+- create a resource S3 bucket
 - copy aws/cloudformation/saml.yaml, aws/cloudformation/pipeline.yaml, and aws/cloudformation/cognitoCustomUserPool.yaml to resource S3 bucket
 - In the AWS web console create a new cloudformation stack using aws/cloudformation/reactCICD.yaml
 
@@ -18,9 +19,10 @@ This project uses AWS Cognito for authentication.
 Or from the output of the cognitoCustomUserPool.yaml template.
 
 ## Directory Structure
-The Serverless API we are building! The [api directory](api/) contains five files.
 
 - **[buildspec.yml]:** This is used by CodeBuild in the build step of our pipeline.
+- aws directory contains CloudFormation and lambda functions.
+- src directory contains the starter reactjs web application.
 
 ## Available Scripts
 
