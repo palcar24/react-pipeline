@@ -42,8 +42,14 @@ Parameters:
     Default: "aws/codebuild/ubuntu-base:14.04"
     Description: The build image to use for building the app
   ResourceBucketName:
-    Type: "String"
-    Description: "Name of bucket to hold resources. lamda's, templates..."
+    Type: String
+    Description: Name of bucket to hold resources. lamda's, templates...
+  UserPoolId:
+    Type: String
+    Description: Existing Cognito User Pool Id
+  AppClientId:
+    Type: String
+    Description: Existing Cognito App Client Id
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -66,6 +72,11 @@ Metadata:
           - BuildType
           - BuildComputeType
           - BuildImage
+      - Label:
+          default: "Cognito Configuration"
+        Parameters:
+          - UserPoolId
+          - AppClientId
     ParameterLabels:
       AppName:
         default: Name of the web application
@@ -87,6 +98,10 @@ Metadata:
         default: CodeBuild image
       ResourceBucketName:
         default: Name of bucket that contains the resources. lamda's templates...
+      UserPoolId:
+        default: Existing Cognito User Pool Id
+      AppClientId:
+        default: Existing Cognito App Client Id
 Resources:
   CodeBuildRole:
     Type: AWS::IAM::Role
@@ -190,17 +205,17 @@ Resources:
         Image: !Sub ${BuildImage}
         Type: !Ref BuildType
         EnvironmentVariables:
-          - Name: S3_BUCKET
+          - Name: S3_ATRIFACT_BUCKET
             Value: !Ref S3ArtifactBucket
+          - Name: S3_SITE_BUCKET
+            Value: !Ref S3SiteBucket
+          - Name: USER_POOL_ID
+            Value: !Ref UserPoolId
+          - Name: APP_CLIENT_ID
+            Value: !Ref AppClientId
       Source:
         Type: CODEPIPELINE
-        BuildSpec: !Sub |
-          version: 0.1
-          phases:
-            post_build:
-              commands:
-                - aws s3 cp --recursive --acl public-read ./src/build s3://${SiteBucketName}/
-      TimeoutInMinutes: 10
+        BuildSpec: buildspec.yml
   S3ArtifactBucket:
       Description: Creating Amazon S3 bucket for AWS CodePipeline artifacts
       Type: AWS::S3::Bucket
@@ -227,7 +242,6 @@ Resources:
             Bool:
               aws:SecureTransport: false
   Pipeline:
-    DependsOn: [S3ArtifactBucket, CodeBuildDeploySite]
     Type: AWS::CodePipeline::Pipeline
     Properties:
       RoleArn: !GetAtt CodePipelineRole.Arn
@@ -249,6 +263,21 @@ Resources:
             Branch: !Ref GitHubBranch
             OAuthToken: !Ref GitHubToken
           RunOrder: 1
+      - Name: Build
+         Actions:
+         - Name: Build
+           ActionTypeId:
+               Category: Build
+               Owner: AWS
+               Version: 1
+               Provider: CodeBuild
+           OutputArtifacts:
+             - Name: !Sub "${AppName}-BuildArtifact"
+           InputArtifacts:
+             - Name: !Sub "${AppName}-SourceArtifact"
+           Configuration:
+               ProjectName: !Ref CodeBuildDeploySite
+           RunOrder: 1
       - Name: Deploy
         Actions:
         - Name: Artifact
@@ -258,7 +287,7 @@ Resources:
             Version: '1'
             Provider: CodeBuild
           InputArtifacts:
-          - Name: !Sub "${AppName}-SourceArtifact"
+          - Name: !Sub "${AppName}-BuildArtifact"
           OutputArtifacts:
             - Name: !Sub "${AppName}-DeployArtifact"
           Configuration:
