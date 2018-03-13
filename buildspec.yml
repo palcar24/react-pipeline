@@ -1,25 +1,14 @@
-version: 0.0
-environment_variables:
-    plaintext:
-        "INPUT_FILE": "aws/cloudformation/saml.yaml"
-        "": ""
-containers:
-    LambdaFunctions:
-        phases:
-            install:
-                commands:
-                    - npm install
-            pre_build:
-                commands:
-                    - "echo -en "export default {\n  cognito: {\n    USER_POOL_ID: "$USER_POOL_ID",\n    APP_CLIENT_ID: $APP_CLIENT_ID\n  }\n};" > config.js"
-            build:
-                commands:
-                    - npm run build
-            post_build:
-                commands:
-                    - aws s3 cp --recursive --acl public-read ./src/build s3://$S3_SITE_BUCKET/
-                    - aws cloudformation package --template $INPUT_FILE --s3-bucket $S3_ARTIFACT_BUCKET --output-template post-saml.yaml
-        artifacts:
-            files:
-                - post-saml.yaml
-                - beta.json
+---
+artifacts:
+  files:
+    - hello
+phases:
+  build:
+    commands:
+      - "echo Build started on `date`"
+      - "echo Compiling the Go code..."
+      - "npm install"
+  post_build:
+    commands:
+      - "echo Build completed on `date`"
+version: 0.2
