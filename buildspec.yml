@@ -9,7 +9,9 @@ containers:
             install:
                 commands:
                     - npm install
-            
+            pre_build:
+                commands:
+                    - echo -en "export default {\n  cognito: {\n    USER_POOL_ID: "USER_POOL_ID",\n    APP_CLIENT_ID: APP_CLIENT_ID\n  }\n};" > config.js
             build:
                 commands:
                     - npm run build
