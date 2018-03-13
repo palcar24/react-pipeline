@@ -8,6 +8,7 @@ phases:
       - npm install
   pre_build:
     commands:
+      - printenv
   build:
     commands:
       - npm run build
