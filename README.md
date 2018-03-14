@@ -3,8 +3,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 # WIP CHECK BACK LATER
 
 ## Setup
+Quick start
 
-### To initialize AWS
+[<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=ReactPipeline=https://s3.amazonaws.com/hayes-lambda/reactCICD.yaml)
+
+### To initialize AWS from your own S3 Bucket
 - create a resource S3 bucket
 - copy aws/cloudformation/saml.yaml, aws/cloudformation/pipeline.yaml, and aws/cloudformation/cognitoCustomUserPool.yaml to resource S3 bucket
 - In the AWS web console create a new cloudformation stack using aws/cloudformation/reactCICD.yaml

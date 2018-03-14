@@ -278,24 +278,6 @@ Resources:
           Configuration:
               ProjectName: !Ref CodeBuildDeploySite
           RunOrder: 1
-      - Name: Deploy
-        Actions:
-        - Name: Artifact
-          ActionTypeId:
-            Category: Build
-            Owner: AWS
-            Version: '1'
-            Provider: CodeBuild
-          InputArtifacts:
-          - Name: !Sub "${AppName}-BuildArtifact"
-          OutputArtifacts:
-            - Name: !Sub "${AppName}-DeployArtifact"
-          Configuration:
-            ProjectName: !Ref CodeBuildDeploySite
-          RunOrder: 1
-      ArtifactStore:
-        Type: S3
-        Location: !Ref PipelineBucket
 Outputs:
   PipelineUrl:
     Value: !Sub https://console.aws.amazon.com/codepipeline/home?region=${AWS::Region}#/view/${Pipeline}
