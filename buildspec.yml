@@ -5,4 +5,4 @@ environment_variables:
 phases:
   install:
     commands:
-      - npm install
+      - printenv
