@@ -11,7 +11,7 @@ containers:
               printf "export default {
                 cognito: {
                   APP_CLIENT_ID:  \"$APP_CLIENT_ID\",
-                  USER_POOL_ID:  %c$USER_POOL_ID%c
+                  USER_POOL_ID:  \"$USER_POOL_ID\"
                 }
               };" > src/config.js
           - "cat src/config.js"
