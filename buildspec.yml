@@ -4,8 +4,10 @@ containers:
     artifacts:
       files:
         - post-saml.yaml
-        - beta.json
     phases:
+      pre_build:
+        commands:
+          - "echo -en export default {\\n  cognito: {\\n    USER_POOL_ID: \"$USER_POOL_ID\",\\n    APP_CLIENT_ID: $APP_CLIENT_ID\\n  }\\n}; > config.js"
       build:
         commands:
           - "npm run build"
@@ -16,9 +18,7 @@ containers:
         commands:
           - "aws s3 cp --recursive --acl public-read ./src/build s3://$S3_SITE_BUCKET/"
           - "aws cloudformation package --template $INPUT_FILE --s3-bucket $S3_ARTIFACT_BUCKET --output-template post-saml.yaml"
-      pre_build:
-        commands:
-          - "echo -en export default {\\n  cognito: {\\n    USER_POOL_ID: \"$USER_POOL_ID\",\\n    APP_CLIENT_ID: $APP_CLIENT_ID\\n  }\\n}; > config.js"
+
 environment_variables:
   plaintext:
     INPUT_FILE: aws/cloudformation/saml.yaml
