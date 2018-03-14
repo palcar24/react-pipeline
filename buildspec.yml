@@ -7,13 +7,13 @@ containers:
     phases:
       pre_build:
         commands:
-          - "echo -en export default {\\n  cognito: {\\n    USER_POOL_ID: \"$USER_POOL_ID\",\\n    APP_CLIENT_ID: $APP_CLIENT_ID\\n  }\\n}; > config.js"
-      build:
-        commands:
-          - "npm run build"
+          - "echo -en export 'default {\\n  cognito: {\\n    USER_POOL_ID: \"$USER_POOL_ID\",\\n    APP_CLIENT_ID: $APP_CLIENT_ID\\n  }\\n};' > config.js"
       install:
         commands:
           - "npm install"
+      build:
+        commands:
+          - "npm run build"
       post_build:
         commands:
           - "aws s3 cp --recursive --acl public-read ./src/build s3://$S3_SITE_BUCKET/"
