@@ -39,7 +39,7 @@ Parameters:
     Description: The build compute type to use for building the app
   BuildImage:
     Type: String
-    Default: "aws/codebuild/ubuntu-base:14.04"
+    Default: "aws/codebuild/nodejs:6.3.1"
     Description: The build image to use for building the app
   ResourceBucketName:
     Type: String
@@ -205,7 +205,7 @@ Resources:
         Image: !Sub ${BuildImage}
         Type: !Ref BuildType
         EnvironmentVariables:
-          - Name: S3_ATRIFACT_BUCKET
+          - Name: S3_ARTIFACT_BUCKET
             Value: !Ref S3ArtifactBucket
           - Name: S3_SITE_BUCKET
             Value: !Ref S3SiteBucket
@@ -264,20 +264,20 @@ Resources:
             OAuthToken: !Ref GitHubToken
           RunOrder: 1
       - Name: Build
-         Actions:
-         - Name: Build
-           ActionTypeId:
-               Category: Build
-               Owner: AWS
-               Version: 1
-               Provider: CodeBuild
-           OutputArtifacts:
-             - Name: !Sub "${AppName}-BuildArtifact"
-           InputArtifacts:
-             - Name: !Sub "${AppName}-SourceArtifact"
-           Configuration:
-               ProjectName: !Ref CodeBuildDeploySite
-           RunOrder: 1
+        Actions:
+        - Name: Build
+          ActionTypeId:
+            Category: Build
+            Owner: AWS
+            Version: 1
+            Provider: CodeBuild
+          OutputArtifacts:
+            - Name: !Sub "${AppName}-BuildArtifact"
+          InputArtifacts:
+            - Name: !Sub "${AppName}-SourceArtifact"
+          Configuration:
+              ProjectName: !Ref CodeBuildDeploySite
+          RunOrder: 1
       - Name: Deploy
         Actions:
         - Name: Artifact

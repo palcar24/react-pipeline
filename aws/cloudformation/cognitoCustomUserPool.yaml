@@ -225,6 +225,10 @@
     UserPoolId:
       Value:
         Ref: "CognitoUserPoolUserPool"
-    UserPoolClientId:
+      Export:
+        Name: !Sub "${AWS::StackName}-UserPoolId"
+    AppClientId:
       Value:
         Ref: "CognitoUserPoolClientUserPoolClient"
+      Export:
+        Name: !Sub "${AWS::StackName}-AppClientId"

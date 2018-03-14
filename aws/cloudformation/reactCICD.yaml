@@ -1,6 +1,7 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Main template used to launch CI/CD Pipline and demo react project.
+Parameters:
   AppName:
    Type: String
    Description: Name of the application.
@@ -88,6 +89,7 @@ Metadata:
         default: Name of bucket that contains the resources. lamda's templates...
 Resources:
   ServerlessPipeline:
+    DependsOn: CognitoStack
     Type: "AWS::CloudFormation::Stack"
     Properties:
       Parameters:
@@ -101,6 +103,8 @@ Resources:
         BuildComputeType:  !Ref BuildComputeType
         BuildImage:  !Ref BuildImage
         ResourceBucketName:  !Ref ResourceBucketName
+        UserPoolId: !GetAtt CognitoStack.Outputs.UserPoolId
+        AppClientId: !GetAtt CognitoStack.Outputs.AppClientId
       TemplateURL: !Join ['', ['https://s3.amazonaws.com/', !Ref 'ResourceBucketName', '/pipeline.yaml']]
   CognitoStack:
     Type: "AWS::CloudFormation::Stack"
