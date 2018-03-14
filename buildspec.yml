@@ -21,4 +21,3 @@ containers:
         artifacts:
           files:
             - post-saml.yaml
-            - beta.json
