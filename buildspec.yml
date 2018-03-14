@@ -9,6 +9,7 @@ containers:
         commands:
           - "echo \"export default {\\n  cognito: {\\n    USER_POOL_ID: "$USER_POOL_ID",\\n    APP_CLIENT_ID: "$APP_CLIENT_ID"\\n  }\\n};\" > src/config.js"
           - "cat src/config.js"
+          
       install:
         commands:
           - "npm install"
