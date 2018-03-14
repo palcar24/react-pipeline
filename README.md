@@ -5,7 +5,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Setup
 Quick start
 
-[<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=ReactPipeline=https://s3.amazonaws.com/hayes-lambda/reactCICD.yaml)
+[<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=ReactPipeline=https://github.com/KeithHayes23/react-pipeline/blob/master/aws/cloudformation/reactCICD.yaml)
 
 ### To initialize AWS from your own S3 Bucket
 - create a resource S3 bucket
