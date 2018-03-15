@@ -1,11 +1,18 @@
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
-# WIP CHECK BACK LATER
+# What is this?
+A set of scripts to kick start a serverless web application running in AWS.
+Includes:
+- reactjs, redux SPA served from an S3 bucket
+  - Authentication by AWS Cognito built in.
+- CI/CD Pipeline using CodePipeline and CodeBuildDeploySite
+
+- Its still a WIP so check back for updates.
 
 ## Setup
 Quick start
 
-[<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=ReactPipeline=https://s3.amazonaws.com/hayes-lambda/reactCICD.yaml)
+[<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=ReactPipeline&amp;templateURL=https://s3.amazonaws.com/hayes-lambda/reactCICD.yaml)
 
 ### To initialize AWS from your own S3 Bucket
 - create a resource S3 bucket
@@ -14,12 +21,21 @@ Quick start
 
 ### For the reactjs application
 This project uses AWS Cognito for authentication.
+
+#### Running it locally
 - You need to copy src/config-dummy.js to src/config.js
 - Then you need to edit src/config.js and update:
   - USER_POOL_ID: "ENTER_YOUR_USER_POOL_ID_HERE",
   - APP_CLIENT_ID: "ENTER_YOUR_APP_CLIENT_ID_HERE"
 - These id's are available in the AWS web console under the Cognito service.
 Or from the output of the cognitoCustomUserPool.yaml template.
+- clone the repo
+- npm install
+- npm start
+
+#### Running it from the CI/CD PipelineUrl
+- config.js is populated for you. Just run the cloud formation script above.
+
 
 ## Directory Structure
 
