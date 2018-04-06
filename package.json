@@ -2,18 +2,29 @@
   "name": "reactapp",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "echo \"Error: no test here sorry\" && exit 1",
+    "eject": "react-scripts eject",
+    "lint": "standard",
+    "fixStyle": "standard --fix",
+    "staticDeploy": "./bin/download_vendor_libs.sh && ./bin/deploy_static_files.sh",
+    "staticDestroy": "./bin/delete_static_files.sh && echo \"Now you can run 'sls remove' on the stage\""
+  },
   "dependencies": {
     "amazon-cognito-identity-js": "^2.0.1",
+    "graphql": "~0.9.1",
+    "lodash": "~4.16.4",
     "react": "^16.2.0",
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.1"
+    "react-notification-system": "^0.2.15",
+    "react-scripts": "1.1.1",
+    "uuid": "~3.0.1"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+  "devDependencies": {
+    "standard": "*"
   }
 }

@@ -9,18 +9,19 @@ Includes:
 
 - Its still a WIP so check back for updates.
 
-## Setup
-Quick start
+## Quick Start
 
+The following link is the main cloudformation template to build everything.
+It runs two nested stack called pipeline.yaml and cognitoCustomUserPool.yaml that are sourced in my S3Bucket.
 [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=ReactPipeline&amp;templateURL=https://s3.amazonaws.com/hayes-lambda/reactCICD.yaml)
 
 ### To initialize AWS from your own S3 Bucket
 - create a resource S3 bucket
 - copy aws/cloudformation/saml.yaml, aws/cloudformation/pipeline.yaml, and aws/cloudformation/cognitoCustomUserPool.yaml to resource S3 bucket
 - In the AWS web console create a new cloudformation stack using aws/cloudformation/reactCICD.yaml
+- reactCICD.yaml has a parameter called ResourceBucketName that must point to your S3 Bucket to initialize the nested stacks.
 
-### For the reactjs application
-This project uses AWS Cognito for authentication.
+### For the reactjs web application
 
 #### Running it locally
 - You need to copy src/config-dummy.js to src/config.js

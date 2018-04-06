@@ -1,4 +1,7 @@
 ---
+environment_variables:
+  plaintext:
+      "STAGE": "dev"
 containers:
   LambdaFunctions:
     artifacts:
@@ -24,7 +27,8 @@ containers:
       post_build:
         commands:
           - "aws s3 cp --recursive --acl public-read ./build s3://$S3_SITE_BUCKET/"
-          - "aws cloudformation package --template $INPUT_FILE --s3-bucket $S3_ARTIFACT_BUCKET --output-template post-saml.yaml"
+          - serverless --stage=$STAGE deploy
+          - serverless print > serverless.out
 
 environment_variables:
   plaintext:
