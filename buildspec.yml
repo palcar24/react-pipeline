@@ -27,7 +27,7 @@ containers:
       post_build:
         commands:
           - "aws s3 cp --recursive --acl public-read ./build s3://$S3_SITE_BUCKET/"
-          - serverless --stage=$STAGE deploy
+          - serverless --stage=dev deploy
           - serverless print > serverless.out
 
 environment_variables:
