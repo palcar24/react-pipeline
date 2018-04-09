@@ -20,7 +20,7 @@ containers:
           - "cat src/config.js"
       install:
         commands:
-          - "apt-get install yarn"
+          - "npm install yarn"
           - "yarn install"
       build:
         commands:
