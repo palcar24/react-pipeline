@@ -1,40 +1,26 @@
----
-environment_variables:
-  plaintext:
-      "STAGE": "dev"
-containers:
-  LambdaFunctions:
-    artifacts:
-      files:
-        - post-saml.yaml
-    phases:
-      pre_build:
-        commands:
-          - |-
-              printf "export default {
-                cognito: {
-                  APP_CLIENT_ID:  \"$APP_CLIENT_ID\",
-                  USER_POOL_ID:  \"$USER_POOL_ID\"
-                }
-              };" > src/config.js
-          - "cat src/config.js"
-      install:
-        commands:
 
-          - "npm install -g serverless"
-          - "npm install -g yarn"
-          - "yarn install"
-      build:
-        commands:
-          - "yarn run build"
+  phases:
+    pre_build:
+      commands:
+        - |-
+            printf "export default {
+              cognito: {
+                APP_CLIENT_ID:  \"$APP_CLIENT_ID\",
+                USER_POOL_ID:  \"$USER_POOL_ID\"
+              }
+            };" > src/config.js
+        - "cat src/config.js"
+    install:
+      commands:
 
-      post_build:
-        commands:
-          - "aws s3 cp --recursive --acl public-read ./build s3://$S3_SITE_BUCKET/"
-          - serverless --stage=dev deploy
-          - serverless print > serverless.out
+        - "npm install -g serverless"
+        - "npm install -g yarn"
+        - "yarn install"
+    build:
+      commands:
+        - "yarn run build"
 
-environment_variables:
-  plaintext:
-    INPUT_FILE: aws/cloudformation/saml.yaml
-version: 0.0
+    post_build:
+      commands:
+        - "aws s3 cp --recursive --acl public-read ./build s3://$S3_SITE_BUCKET/"
+        - serverless --stage=dev deploy -v
