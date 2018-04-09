@@ -20,12 +20,14 @@ containers:
           - "cat src/config.js"
       install:
         commands:
-          - "npm install yarn"
+
+          - "npm install -g serverless"
+          - "npm install -g yarn"
           - "yarn install"
       build:
         commands:
           - "yarn run build"
-          - "yarn add serverless"
+
       post_build:
         commands:
           - "aws s3 cp --recursive --acl public-read ./build s3://$S3_SITE_BUCKET/"
