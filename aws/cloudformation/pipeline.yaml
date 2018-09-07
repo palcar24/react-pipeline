@@ -244,6 +244,10 @@ Resources:
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
+      ArtifactStore:
+        Type: S3
+        Location:
+          Ref: S3ArtifactBucket
       RoleArn: !GetAtt CodePipelineRole.Arn
       Stages:
       - Name: Source
