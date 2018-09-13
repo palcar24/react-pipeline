@@ -35,7 +35,8 @@ Or from the output of the cognitoCustomUserPool.yaml template.
 - npm start
 
 #### Running it from the CI/CD PipelineUrl
-- config.js is populated for you. Just run the cloud formation script above.
+- config.js is populated for you. Just run the cloudformation script.
+[<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=ReactPipeline&amp;templateURL=https://s3.amazonaws.com/hayes-lambda/reactCICD.yaml)
 
 
 ## Directory Structure
@@ -72,8 +73,8 @@ Your app is ready to be deployed!
 
 ## Deployment
 
-Deployment occurs when a commit is made to the repo. Make sure you run npm run build before you commit.
-This will trigger CodeDeploy to executes it build and deploy process. Which in turns copies the files from build/ to you S3 bucket that statically servers the content.
+Deployment occurs when a commit is made to the repo. Make sure you execute npm run build command before you commit.
+This will trigger CodeDeploy to executes it build and deploy process. Which in turns copies the files from build/ to your S3 bucket that statically servers the content.
 
 ## TODO's
 
