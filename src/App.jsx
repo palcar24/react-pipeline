@@ -20,9 +20,15 @@ class App extends Component {
         this.componentDidMount = this.componentDidMount.bind(this);
         this.handleNotificationClick = this.handleNotificationClick.bind(this);
         this.state = {
-            _notificationSystem: null
+            _notificationSystem: null,
+            isAuthenticated: false
         };
     }
+
+    userHasAuthenticated = authenticated => {
+      this.setState({ isAuthenticated: authenticated });
+    }
+
     handleNotificationClick(position){
         var color = Math.floor((Math.random() * 4) + 1);
         var level;
@@ -73,6 +79,10 @@ class App extends Component {
         }
     }
     render() {
+      const childProps = {
+        isAuthenticated: this.state.isAuthenticated,
+        userHasAuthenticated: this.userHasAuthenticated
+      };
         return (
 
                 <div className="wrapper">
