@@ -38,6 +38,7 @@ class Sidebar extends Component{
                             </div>
 
                         </a>
+                        
                         <a href="/" className="simple-text logo-normal">
                             React Pipeline
                         </a>
