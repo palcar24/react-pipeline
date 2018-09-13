@@ -40,7 +40,7 @@ class Sidebar extends Component{
                         </a>
                         
                         <a href="/" className="simple-text logo-normal">
-                            React Pipeline
+                            Free Beer Nite
                         </a>
                     </div>
                 <div className="sidebar-wrapper">
