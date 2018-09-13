@@ -39,7 +39,7 @@ class Sidebar extends Component{
 
                         </a>
                         <a href="/" className="simple-text logo-normal">
-                            Hayes Tech Nite
+                            React Pipeline
                         </a>
                     </div>
                 <div className="sidebar-wrapper">
